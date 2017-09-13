@@ -4,6 +4,7 @@ import java.util.*;
 
 /**
  * Diese Klasse sucht nach Loesungen des n-RR Spiels
+ * @author Lixiang
  */
 public class RRSolver {
 
