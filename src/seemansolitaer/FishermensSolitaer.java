@@ -18,6 +18,11 @@ public class FishermensSolitaer {
         FishermensSolitaer.blackTokensToInitiate = NUMBER_OF_INITIAL_TOKENS;
         FishermensSolitaer.emptyFieldToInitiate = 1;
         initGame();
+        for(int i = 0; i < 5; i++) {
+            for(int j = 0; j < 5; j++) {
+                spielfeld[i][j].setNeighbours(spielfeld, i, j);
+            }
+        }
     }
 
     /**
@@ -70,5 +75,14 @@ public class FishermensSolitaer {
 
     public static void main(String[] args) {
         FishermensSolitaer game = new FishermensSolitaer();
+        for(int i = 0; i < 5; i++) {
+            for(int j = 0; j < 5; j++) {
+                System.out.println("TOKEN: " + FishermensSolitaer.spielfeld[i][j].getToekn().toString());
+                System.out.println("NORTH: " + FishermensSolitaer.spielfeld[i][j].getNextNorth());
+                System.out.println("SOUTH: " + FishermensSolitaer.spielfeld[i][j].getNextSouth());
+                System.out.println("WEST: " + FishermensSolitaer.spielfeld[i][j].getNextWest());
+                System.out.println("EAST: " + FishermensSolitaer.spielfeld[i][j].getNextEast());
+            }
+        }
     }
 }
