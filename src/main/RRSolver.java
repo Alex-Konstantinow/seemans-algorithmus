@@ -37,7 +37,25 @@ public class RRSolver {
 		 * Tipp: Haltet euch eng an den in der Vorlesung vorgestellten Algorithmus
 		 * und waehlt eine geeignete Datenstruktur fuer die ToDo-Liste.
 		 */
-		
-		return "Not implemented yet.";
+		RRState robin = new RRState(n);
+
+		//	Stack stapel;
+//		stapel = new Stack();
+		ArrayList<RRState> queue = new ArrayList();
+		do {
+			if (queue.isEmpty() == true) {
+				return "Keine Lösung";
+			} else {
+				RRState state = queue.get(queue.size());
+				queue.remove(queue.size());
+				if (state.isSolution() == true) {
+					return state.toString();
+				} else {
+					for (Iterator i = state.expand().iterator(); i.hasNext(); ) {
+						queue.add((RRState) i.next());
+					}
+				}
+			}
+		} while (true);
 	}
 }
