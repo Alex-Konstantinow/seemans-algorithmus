@@ -1,5 +1,10 @@
 package seemansolitaer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public class FishermensSolitaer {
 
     private final static int COL = 5;
@@ -10,17 +15,24 @@ public class FishermensSolitaer {
     private static int blackTokensToInitiate;
     private static int emptyFieldToInitiate;
 
-    private static Field[][] spielfeld;
+    private Field[][] gameState;
+    private static Field[][] solution;
+    private Field emptyField;
+
+    private static Map<Integer, Field[][]> todoContent = new HashMap<Integer, Field[][]>();
+    private static ArrayList<Field[][]> todo = new ArrayList<Field[][]>();
 
     public FishermensSolitaer() {
-        FishermensSolitaer.spielfeld = new Field[COL][ROW];
+        this.gameState = new Field[COL][ROW];
+        FishermensSolitaer.solution = new Field[COL][ROW];
         FishermensSolitaer.whiteTokensToInitiate = NUMBER_OF_INITIAL_TOKENS;
         FishermensSolitaer.blackTokensToInitiate = NUMBER_OF_INITIAL_TOKENS;
         FishermensSolitaer.emptyFieldToInitiate = 1;
         initGame();
-        for(int i = 0; i < 5; i++) {
-            for(int j = 0; j < 5; j++) {
-                spielfeld[i][j].setNeighbours(spielfeld, i, j);
+        solutionTest();
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                gameState[i][j].setNeighbours(gameState, i, j);
             }
         }
     }
@@ -37,52 +49,99 @@ public class FishermensSolitaer {
     private void initGame() {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-                System.out.print(" ");
                 if ((i == 0 || i == 1) && (j == 0 || j == 1) || ((i == 3 || i == 4) && (j == 3 || j == 4))) {
-                    FishermensSolitaer.spielfeld[i][j] = new Field(i, j, Token.NOFIELD);
-                    System.out.print("[X]");
+                    this.gameState[i][j] = new Field(i, j, Token.NOFIELD);
                 } else {
-                    if (FishermensSolitaer.whiteTokensToInitiate != 0) {
-                        FishermensSolitaer.setFieldWithWhiteToken(i, j);
+                    if (FishermensSolitaer.whiteTokensToInitiate > 2) {
+                        setFieldWithWhiteToken(i, j);
                     } else if (FishermensSolitaer.whiteTokensToInitiate == 2 && FishermensSolitaer.blackTokensToInitiate != 6) {
-                        FishermensSolitaer.setFieldWithBlackToken(i, j);
+                        setFieldWithBlackToken(i, j);
                     } else if (i == 2 && j == 2) {
-                        FishermensSolitaer.spielfeld[i][j] = new Field(i, j, Token.EMPTY);
+                        this.emptyField = new Field(i, j, Token.EMPTY);
+                        this.gameState[i][j] = emptyField;
                         FishermensSolitaer.emptyFieldToInitiate--;
-                        System.out.print("[E]");
-                    } else if(FishermensSolitaer.emptyFieldToInitiate == 0 && FishermensSolitaer.whiteTokensToInitiate != 0) {
-                        FishermensSolitaer.setFieldWithWhiteToken(i, j);
+                    } else if (FishermensSolitaer.emptyFieldToInitiate == 0 && FishermensSolitaer.whiteTokensToInitiate != 0) {
+                        setFieldWithWhiteToken(i, j);
                     } else {
-                        FishermensSolitaer.setFieldWithBlackToken(i, j);
+                        setFieldWithBlackToken(i, j);
                     }
+                }
+            }
+        }
+    }
+
+    private void solutionTest() {
+        for(int i = 0; i < 5; i++) {
+            for(int j = 0; j < 5; j++) {
+                solution[i][j] = gameState[j][i];
+            }
+        }
+    }
+
+    private void setFieldWithWhiteToken(int x, int y) {
+        this.gameState[x][y] = new Field(x, y, Token.WHITE);
+        FishermensSolitaer.whiteTokensToInitiate--;
+    }
+
+    private void setFieldWithBlackToken(int x, int y) {
+        this.gameState[x][y] = new Field(x, y, Token.BLACK);
+        FishermensSolitaer.blackTokensToInitiate--;
+    }
+
+    public Field[][] getGameState() {
+        return gameState;
+    }
+
+    public void changePostion(Field chosenField) {
+        int emptyPositionX = this.emptyField.getxPositionOnField();
+        int emptyPositionY = this.emptyField.getyPositionOnField();
+
+        this.emptyField.setxPositionOnField(chosenField.getxPositionOnField());
+        this.emptyField.setyPositionOnField(chosenField.getyPositionOnField());
+        this.gameState[chosenField.getxPositionOnField()][chosenField.getyPositionOnField()] = this.emptyField;
+        chosenField.setxPositionOnField(emptyPositionX);
+        chosenField.setyPositionOnField(emptyPositionY);
+        this.gameState[emptyPositionX][emptyPositionY] = chosenField;
+        emptyField.setNeighbours(gameState, this.emptyField.getxPositionOnField(), this.emptyField.getyPositionOnField());
+        chosenField.setNeighbours(gameState, chosenField.getxPositionOnField(), chosenField.getyPositionOnField());
+    }
+
+    public void drawGameState() {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                switch (this.gameState[i][j].getToken()) {
+                    case NOFIELD:
+                        System.out.print("[X]");
+                        break;
+                    case EMPTY:
+                        System.out.print("[E]");
+                        break;
+                    case BLACK:
+                        System.out.print("[B]");
+                        break;
+                    case WHITE:
+                        System.out.print("[W]");
+                        break;
+                    default:
+                        break;
                 }
             }
             System.out.println();
         }
-    }
-
-    private static void setFieldWithWhiteToken(int x, int y) {
-        FishermensSolitaer.spielfeld[x][y] = new Field(x, y, Token.WHITE);
-        FishermensSolitaer.whiteTokensToInitiate--;
-        System.out.print("[W]");
-    }
-
-    private static void setFieldWithBlackToken(int x, int y) {
-        FishermensSolitaer.spielfeld[x][y] = new Field(x, y, Token.BLACK);
-        FishermensSolitaer.blackTokensToInitiate--;
-        System.out.print("[B]");
+        System.out.println();
     }
 
     public static void main(String[] args) {
         FishermensSolitaer game = new FishermensSolitaer();
-        for(int i = 0; i < 5; i++) {
-            for(int j = 0; j < 5; j++) {
-                System.out.println("TOKEN: " + FishermensSolitaer.spielfeld[i][j].getToekn().toString());
-                System.out.println("NORTH: " + FishermensSolitaer.spielfeld[i][j].getNextNorth());
-                System.out.println("SOUTH: " + FishermensSolitaer.spielfeld[i][j].getNextSouth());
-                System.out.println("WEST: " + FishermensSolitaer.spielfeld[i][j].getNextWest());
-                System.out.println("EAST: " + FishermensSolitaer.spielfeld[i][j].getNextEast());
-            }
-        }
+        FishermensSolitaer.todoContent.put(Arrays.deepHashCode(game.getGameState()), game.getGameState());
+        game.drawGameState();
+        System.out.println(Arrays.deepHashCode(game.getGameState()));
+        game.changePostion(game.getGameState()[2][3]);
+        game.drawGameState();
+        System.out.println(Arrays.deepHashCode(game.getGameState()));
+        game.changePostion(game.getGameState()[2][2]);
+        game.drawGameState();
+        System.out.println(FishermensSolitaer.todoContent.containsKey(Arrays.deepHashCode(game.getGameState())));
+        System.out.println(Arrays.deepHashCode(game.getGameState()));
     }
 }
