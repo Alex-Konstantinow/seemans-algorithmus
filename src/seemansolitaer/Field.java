@@ -20,45 +20,43 @@ public class Field {
 
     public void setNeighbours(Field[][] fields, int x, int y) {
         if (x == 0) {
-            this.nextWest = null;
-        }
-        if (x == 4) {
-            this.nextEast = null;
-        }
-        if (y == 0) {
             this.nextNorth = null;
         }
-        if (y == 4) {
+        if (x == 4) {
             this.nextSouth = null;
+        }
+        if (y == 0) {
+            this.nextWest = null;
+        }
+        if (y == 4) {
+            this.nextEast = null;
         }
         if (x != 4) {
             if (fields[x + 1][y].token.equals(Token.NOFIELD)) {
-                this.nextEast = null;
+                this.nextSouth = null;
             } else {
-                this.nextEast = fields[x + 1][y];
+                this.nextSouth = fields[x + 1][y];
             }
         }
         if (x != 0) {
             if (fields[x - 1][y].token.equals(Token.NOFIELD)) {
-                this.nextWest = null;
+                this.nextNorth = null;
             } else {
-                if (x != 0) {
-                    this.nextWest = fields[x - 1][y];
-                }
+                this.nextNorth = fields[x - 1][y];
             }
         }
         if (y != 4) {
             if (fields[x][y + 1].token.equals(Token.NOFIELD)) {
-                this.nextNorth = null;
+                this.nextEast = null;
             } else {
-                this.nextNorth = fields[x][y + 1];
+                this.nextEast = fields[x][y + 1];
             }
         }
         if (y != 0) {
             if (fields[x][y - 1].token.equals(Token.NOFIELD)) {
-                this.nextSouth = null;
+                this.nextWest = null;
             } else {
-                this.nextSouth = fields[x][y - 1];
+                this.nextWest = fields[x][y - 1];
             }
         }
     }
@@ -113,11 +111,11 @@ public class Field {
         return nextWest;
     }
 
-    public int getxPositionOnField (){
+    public int getxPositionOnField() {
         return xPositionOnField;
     }
 
-    public int getyPositionOnField () {
+    public int getyPositionOnField() {
         return yPositionOnField;
     }
 
