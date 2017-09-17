@@ -39,20 +39,19 @@ public class RRSolver {
 		 */
 		RRState robin = new RRState(n);
 
-		//	Stack stapel;
-//		stapel = new Stack();
-		ArrayList<RRState> queue = new ArrayList();
+		Stack stapel;
+		stapel = new Stack();
+		stapel.push(robin);
 		do {
-			if (queue.isEmpty() == true) {
+			if (stapel.isEmpty() == true) {
 				return "Keine Lösung";
 			} else {
-				RRState state = queue.get(queue.size());
-				queue.remove(queue.size());
+				RRState state = (RRState)stapel.pop();
 				if (state.isSolution() == true) {
 					return state.toString();
 				} else {
 					for (Iterator i = state.expand().iterator(); i.hasNext(); ) {
-						queue.add((RRState) i.next());
+						stapel.push((RRState)i.next());
 					}
 				}
 			}
