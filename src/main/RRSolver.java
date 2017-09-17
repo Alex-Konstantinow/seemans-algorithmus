@@ -26,21 +26,8 @@ public class RRSolver {
 	 * Tiefensuche und gibt diese als String zurueck
 	 */
 	private static String solve(int n) throws Exception {
-		/*
-		 * Hier soll eure Loesung implementiert werden. 
-		 * Wichtige Methoden der Klasse RRState: 
-		 * 		RRState(size) - Konstruktor fuer den Startzustand.
-		 * 		isSolution()  - Gibt true zurueck, falls das Spiel geloest wurde.
-		 * 		toString()    - Gibt bisherige Zuege als String zurueck.
-		 * 		expand()      - Gibt alle moeglichen Folgezustaende als Liste zurueck.
-		 * 
-		 * Tipp: Haltet euch eng an den in der Vorlesung vorgestellten Algorithmus
-		 * und waehlt eine geeignete Datenstruktur fuer die ToDo-Liste.
-		 */
 		RRState robin = new RRState(n);
-
-		Stack stapel;
-		stapel = new Stack();
+		Stack stapel = new Stack();
 		stapel.push(robin);
 		do {
 			if (stapel.isEmpty() == true) {
