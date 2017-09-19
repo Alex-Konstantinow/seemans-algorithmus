@@ -26,34 +26,34 @@ public class RRSolver {
 	 * Tiefensuche und gibt diese als String zurueck
 	 */
 	private static String solve(int n) throws Exception {
-		/*
-		 * Hier soll eure Loesung implementiert werden. 
-		 * Wichtige Methoden der Klasse RRState: 
-		 * 		RRState(size) - Konstruktor fuer den Startzustand.
-		 * 		isSolution()  - Gibt true zurueck, falls das Spiel geloest wurde.
-		 * 		toString()    - Gibt bisherige Zuege als String zurueck.
-		 * 		expand()      - Gibt alle moeglichen Folgezustaende als Liste zurueck.
-		 * 
-		 * Tipp: Haltet euch eng an den in der Vorlesung vorgestellten Algorithmus
-		 * und waehlt eine geeignete Datenstruktur fuer die ToDo-Liste.
-		 */
-		RRState robin = new RRState(n);
 
-		Stack stapel;
-		stapel = new Stack();
-//		ArrayList<RRState> queue = new ArrayList();
+		ArrayList<String> counter = new ArrayList();
+		RRState robin = new RRState(n);
+		Stack stapel = new Stack();
+		stapel.push(robin);
 		do {
 			if (stapel.isEmpty() == true) {
-				return "Keine Lösung";
+//				return "Keine Lösung";
+				for(Iterator i = counter.iterator(); i.hasNext();){
+					System.out.println(i.next().toString());
+				}
+				return counter.size() + " Lösungen";
 			} else {
-//				RRState state = queue.get(queue.size());
-//				queue.remove(queue.size());
-				RRState state = ((RRState)stapel.pop());
+				RRState state = (RRState)stapel.pop();
 				if (state.isSolution() == true) {
-					return state.toString();
+//					return state.toString();
+					boolean flag = false;
+					for(Iterator i = counter.iterator(); i.hasNext();){
+						if(i.next().toString().equals(state.toString())){
+							flag = true;
+						}
+					}
+					if(flag == false){
+						counter.add(state.toString());
+					}
 				} else {
 					for (Iterator i = state.expand().iterator(); i.hasNext(); ) {
-						stapel.push((RRState) i.next());
+						stapel.push((RRState)i.next());
 					}
 				}
 			}
