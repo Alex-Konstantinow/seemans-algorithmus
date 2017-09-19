@@ -26,6 +26,7 @@ public class RRSolver {
 	 * Tiefensuche und gibt diese als String zurueck
 	 */
 	private static String solve(int n) throws Exception {
+
 		ArrayList<String> counter = new ArrayList();
 		RRState robin = new RRState(n);
 		Stack stapel = new Stack();
