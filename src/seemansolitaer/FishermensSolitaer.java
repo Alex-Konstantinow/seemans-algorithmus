@@ -111,7 +111,7 @@ public class FishermensSolitaer {
             currentEmptyField = nextStateToExpand.getEmptyField();
             if (isSolution(nextStateToExpand)) {
                 drawGameState(nextStateToExpand.getGameState());
-                return "Geschafft!";
+                return "Lösung gefunden in " + nextStateToExpand.getMovesDone() + " Zügen!";
             } else {
                 ArrayList<GameState> expandedStates = expand(nextStateToExpand);
                 add(expandedStates);
