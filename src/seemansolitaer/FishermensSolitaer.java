@@ -18,7 +18,8 @@ public class FishermensSolitaer {
 
     private Field[][] currentGameState = new Field[COL][ROW];
     private Field currentEmptyField;
-    private static Field[][] solution = new Field[COL][ROW];
+    private Field[][] solutionTest = new Field[COL][ROW];
+    private GameState solutionState;
 
     private static HashMap<Long, GameState> todoContent = new HashMap();
     private static Comparator<GameState> comparator = new MovesDoneComparator();
@@ -34,33 +35,46 @@ public class FishermensSolitaer {
                 if ((i == 0 || i == 1) && (j == 0 || j == 1) || ((i == 3 || i == 4) && (j == 3 || j == 4))) {
                     this.currentGameState[i][j] = new Field(i, j, COL - i - 1, ROW - j - 1,
                             new Token(i, j, Tokentype.NOFIELD));
+                    solutionTest[j][i] = new Field(j, i, COL - j - 1, ROW - i - 1,
+                            new Token(j, i, Tokentype.NOFIELD));
                 } else {
                     if (whiteTokensToInitiate > 2) {
                         this.currentGameState[i][j] = new Field(i, j, COL - i - 1, ROW - j - 1,
                                 new Token(i, j, Tokentype.WHITE));
                         whiteTokensToInitiate--;
+                        solutionTest[j][i] = new Field(j, i, COL - j - 1, ROW - i - 1,
+                                new Token(j, i, Tokentype.WHITE));
                     } else if (whiteTokensToInitiate == 2 && blackTokensToInitiate != 6) {
                         this.currentGameState[i][j] = new Field(i, j, COL - i - 1, ROW - j - 1,
                                 new Token(i, j, Tokentype.BLACK));
                         blackTokensToInitiate--;
+                        solutionTest[j][i] = new Field(j, i, COL - j - 1, ROW - i - 1,
+                                new Token(j, i, Tokentype.BLACK));
                     } else if (i == 2 && j == 2) {
-                        this.currentEmptyField = new Field(i, j, COL - i - 1, ROW - j - 1,
-                                new Token(i, j, Tokentype.EMPTY));
+                        this.currentEmptyField = new Field(j, i, COL - j - 1, ROW - i - 1,
+                                new Token(j, i, Tokentype.EMPTY));
                         this.currentGameState[i][j] = this.currentEmptyField;
                         emptyFieldToInitiate--;
+                        solutionTest[j][i] = new Field(j, i, COL - j - 1, ROW - i - 1,
+                                new Token(j, i, Tokentype.EMPTY));
                     } else if (emptyFieldToInitiate == 0 && whiteTokensToInitiate != 0) {
                         this.currentGameState[i][j] = new Field(i, j, COL - i - 1, ROW - j - 1,
                                 new Token(i, j, Tokentype.WHITE));
                         whiteTokensToInitiate--;
+                        solutionTest[j][i] = new Field(j, i, COL - j - 1, ROW - i - 1,
+                                new Token(j, i, Tokentype.WHITE));
                     } else {
                         this.currentGameState[i][j] = new Field(i, j, COL - i - 1, ROW - j - 1,
                                 new Token(i, j, Tokentype.BLACK));
                         blackTokensToInitiate--;
+                        solutionTest[j][i] = new Field(j, i, COL - j - 1, ROW - i - 1,
+                                new Token(j, i, Tokentype.BLACK));
                     }
                 }
             }
         }
         GameState startState = new GameState(this.currentGameState, this.currentEmptyField);
+        solutionState = new GameState(this.solutionTest, this.currentEmptyField);
         todoContent.put(startState.hashCode(2), startState);
         todo.add(startState);
     }
@@ -96,6 +110,7 @@ public class FishermensSolitaer {
             currentGameState = nextStateToExpand.getGameState();
             currentEmptyField = nextStateToExpand.getEmptyField();
             if (isSolution(nextStateToExpand)) {
+                drawGameState(nextStateToExpand.getGameState());
                 return "Geschafft!";
             } else {
                 ArrayList<GameState> expandedStates = expand(nextStateToExpand);
@@ -106,7 +121,7 @@ public class FishermensSolitaer {
     }
 
     private boolean isSolution(GameState gameState) {
-        return gameState.getHeuristic() == 0;
+        return gameState.hashCode(2) == solutionState.hashCode(2);
     }
 
     private void add(ArrayList<GameState> expandedStates) {
