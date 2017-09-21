@@ -2,24 +2,24 @@ package seemansolitaer;
 
 public class GameState{
 
-    private Field[][] gameState;
+    private Field[][] fields;
     private Field emptyField;
     private int movesDone;
     private int heuristic;
 
-    public GameState(Field[][] gameState, Field emptyField) {
-        this.gameState = gameState;
+    public GameState(Field[][] fields, Field emptyField) {
+        this.fields = fields;
         this.emptyField = emptyField;
         this.movesDone = 0;
         this.heuristic = calculateHeuristic();
     }
 
     public GameState(GameState currentGameState) {
-        this.gameState = new Field[5][5];
+        this.fields = new Field[5][5];
         for(int i = 0; i< 5; i++) {
             for( int j = 0; j< 5; j++) {
-                Field field = currentGameState.gameState[i][j];
-                this.gameState[i][j] = new Field(field.getxPositionOnField(), field.getyPositionOnField(),
+                Field field = currentGameState.fields[i][j];
+                this.fields[i][j] = new Field(field.getxPositionOnField(), field.getyPositionOnField(),
                         field.getTargetXPosition(), field.getTargetYPosition(), field.getToken());
             }
         }
@@ -27,9 +27,7 @@ public class GameState{
         this.emptyField = new Field(field.getxPositionOnField(), field.getyPositionOnField(),
                 field.getTargetXPosition(), field.getTargetYPosition(), field.getToken());
         this.movesDone = currentGameState.movesDone + 1;
-        // System.out.println("Moves DONE: " + this.movesDone);
         this.heuristic = calculateHeuristic();
-        // System.out.println("Heuristik: " + this.heuristic);
     }
 
     /**
@@ -41,7 +39,7 @@ public class GameState{
         String code = "";
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-                switch (gameState[i][j].getToken().getTokentype()) {
+                switch (fields[i][j].getToken().getTokentype()) {
                     case NOFIELD:
                         code += "11";
                         break;
@@ -70,22 +68,22 @@ public class GameState{
         int positionY = emptyField.getyPositionOnField();
         switch (direction) {
             case NORTH:
-                if (positionY != 0 && !gameState[positionX][positionY - 1].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
+                if (positionY != 0 && !fields[positionX][positionY - 1].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
                     swap(positionX, positionY - 1);
                 }
                 break;
             case SOUTH:
-                if (positionY != 4 && !gameState[positionX][positionY + 1].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
+                if (positionY != 4 && !fields[positionX][positionY + 1].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
                     swap(positionX, positionY + 1);
                 }
                 break;
             case WEST:
-                if (positionX != 0 && !gameState[positionX - 1][positionY].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
+                if (positionX != 0 && !fields[positionX - 1][positionY].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
                     swap(positionX - 1, positionY);
                 }
                 break;
             case EAST:
-                if (positionX != 4 && !gameState[positionX + 1][positionY].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
+                if (positionX != 4 && !fields[positionX + 1][positionY].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
                     swap(positionX + 1, positionY);
                 }
         }
@@ -102,22 +100,22 @@ public class GameState{
         int positionY = emptyField.getyPositionOnField();
         switch (direction) {
             case NORTH:
-                if (positionY > 1 && !gameState[positionX][positionY - 2].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
+                if (positionY > 1 && !fields[positionX][positionY - 2].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
                     swap(positionX, positionY - 2);
                 }
                 break;
             case SOUTH:
-                if (positionY < 3 && !gameState[positionX][positionY + 2].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
+                if (positionY < 3 && !fields[positionX][positionY + 2].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
                     swap(positionX, positionY + 2);
                 }
                 break;
             case WEST:
-                if (positionX > 1 && !gameState[positionX - 2][positionY].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
+                if (positionX > 1 && !fields[positionX - 2][positionY].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
                     swap(positionX - 2, positionY);
                 }
                 break;
             case EAST:
-                if (positionX < 3 && !gameState[positionX + 2][positionY].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
+                if (positionX < 3 && !fields[positionX + 2][positionY].getToken().getTokentype().equals(Tokentype.NOFIELD)) {
                     swap(positionX + 2, positionY);
                 }
         }
@@ -133,41 +131,40 @@ public class GameState{
     private void swap(int positionX, int positionY) {
         int newPositionX = this.emptyField.getxPositionOnField();
         int newPositionY = this.emptyField.getyPositionOnField();
-        Field swapedField = new Field(newPositionX, newPositionY, gameState[positionX][positionY].getTargetXPosition(),
-                gameState[positionX][positionY].getTargetYPosition(), gameState[positionX][positionY].getToken());
+        Field swapedField = new Field(newPositionX, newPositionY, fields[positionX][positionY].getTargetXPosition(),
+                fields[positionX][positionY].getTargetYPosition(), fields[positionX][positionY].getToken());
         emptyField.setPositionOnField(positionX, positionY);
-        gameState[positionX][positionY] = this.emptyField;
-        gameState[newPositionX][newPositionY] = swapedField;
+        fields[positionX][positionY] = this.emptyField;
+        fields[newPositionX][newPositionY] = swapedField;
         heuristic = calculateHeuristic();
-        // System.out.println("Heuristik: " + heuristic);
     }
 
     /**
      * generates the expected turns left for the current gamestate
      *
-     * @return
+     * @return heuristic divided by 2, because we expect to do always 2 steps per turn
      */
     private int calculateHeuristic() {
         int xMovesLeft = 0;
         int yMovesLeft = 0;
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-                xMovesLeft += Math.abs(gameState[i][j].getxPositionOnField() - gameState[i][j].getTargetXPosition());
-                yMovesLeft += Math.abs(gameState[i][j].getyPositionOnField() - gameState[i][j].getTargetYPosition());
+                xMovesLeft += Math.abs(fields[i][j].getxPositionOnField() - fields[i][j].getTargetXPosition());
+                yMovesLeft += Math.abs(fields[i][j].getyPositionOnField() - fields[i][j].getTargetYPosition());
 
             }
         }
         return (xMovesLeft + yMovesLeft) / 2;
     }
 
-    public Field[][] getGameState() {
+    public Field[][] getFields() {
 
-        return gameState;
+        return fields;
     }
 
-    public void setGameState(Field[][] gameState) {
+    public void setFields(Field[][] fields) {
 
-        this.gameState = gameState;
+        this.fields = fields;
     }
 
     public Field getEmptyField() {

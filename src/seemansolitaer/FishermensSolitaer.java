@@ -1,8 +1,5 @@
 package seemansolitaer;
 
-import jdk.nashorn.internal.parser.TokenType;
-
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class FishermensSolitaer {
@@ -107,13 +104,13 @@ public class FishermensSolitaer {
     public String solverFishermensSolitar() {
         while (!todo.isEmpty()) {
             GameState nextStateToExpand = todo.poll();
-            currentGameState = nextStateToExpand.getGameState();
+            currentGameState = nextStateToExpand.getFields();
             currentEmptyField = nextStateToExpand.getEmptyField();
             if (isSolution(nextStateToExpand)) {
-                drawGameState(nextStateToExpand.getGameState());
+                drawGameState(nextStateToExpand.getFields());
                 return "Lösung gefunden in " + nextStateToExpand.getMovesDone() + " Zügen!";
             } else {
-                ArrayList<GameState> expandedStates = expand(nextStateToExpand);
+                List<GameState> expandedStates = expand(nextStateToExpand);
                 add(expandedStates);
             }
         }
@@ -124,7 +121,7 @@ public class FishermensSolitaer {
         return gameState.hashCode(2) == solutionState.hashCode(2);
     }
 
-    private void add(ArrayList<GameState> expandedStates) {
+    private void add(List<GameState> expandedStates) {
         Iterator<GameState> iterator = expandedStates.iterator();
         while (iterator.hasNext()) {
             GameState gameState = iterator.next();
@@ -134,20 +131,17 @@ public class FishermensSolitaer {
                     todo.remove(todoContent.get(existingGameState.hashCode(2)));
                     todoContent.replace(gameState.hashCode(2), existingGameState, gameState);
                     todo.add(gameState);
-                    drawGameState(gameState.getGameState());
+                    drawGameState(gameState.getFields());
                 }
             } else {
                 todoContent.put(gameState.hashCode(2), gameState);
                 todo.add(gameState);
-                //drawGameState(gameState.getGameState());
 
             }
-            //System.out.println("Listencontenlänge: " + todoContent.size());
-            //System.out.println("Listenlänge: " + todo.size());
         }
     }
 
-    public ArrayList<GameState> expand(GameState nextStateToExpand) {
+    public List<GameState> expand(GameState nextStateToExpand) {
         ArrayList<GameState> expandedStates = new ArrayList<GameState>();
         //1 field move
         expandedStates.add(new GameState(nextStateToExpand).swapWithFirstNeighbour(Direction.NORTH));
