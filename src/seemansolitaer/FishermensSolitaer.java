@@ -29,7 +29,7 @@ public class FishermensSolitaer {
     private void initGame() {
         for (int i = 0; i < COL; i++) {
             for (int j = 0; j < ROW; j++) {
-                if ((i == 0 || i == 1) && (j == 0 || j == 1) || ((i == 3 || i == 4) && (j == 3 || j == 4))) {
+                /*if ((i == 0 || i == 1) && (j == 0 || j == 1) || ((i == 3 || i == 4) && (j == 3 || j == 4))) {
                     this.currentGameState[i][j] = new Field(i, j, COL - i - 1, ROW - j - 1,
                             new Token(i, j, Tokentype.NOFIELD));
                     solutionTest[j][i] = new Field(j, i, COL - j - 1, ROW - i - 1,
@@ -65,6 +65,45 @@ public class FishermensSolitaer {
                                 new Token(i, j, Tokentype.BLACK));
                         blackTokensToInitiate--;
                         solutionTest[j][i] = new Field(j, i, COL - j - 1, ROW - i - 1,
+                                new Token(j, i, Tokentype.BLACK));
+                    }
+                }*/
+                if ((i == 0 || i == 1) && (j == 0 || j == 1) || ((i == 3 || i == 4) && (j == 3 || j == 4))) {
+                    this.currentGameState[i][j] = new Field(i, j, j, i,
+                            new Token(i, j, Tokentype.NOFIELD));
+                    solutionTest[j][i] = new Field(j, i, i, j,
+                            new Token(j, i, Tokentype.NOFIELD));
+                } else {
+                    if (whiteTokensToInitiate > 2) {
+                        this.currentGameState[i][j] = new Field(i, j, j, i,
+                                new Token(i, j, Tokentype.WHITE));
+                        whiteTokensToInitiate--;
+                        solutionTest[j][i] = new Field(j, i, i, j,
+                                new Token(j, i, Tokentype.WHITE));
+                    } else if (whiteTokensToInitiate == 2 && blackTokensToInitiate != 6) {
+                        this.currentGameState[i][j] = new Field(i, j, j, i,
+                                new Token(i, j, Tokentype.BLACK));
+                        blackTokensToInitiate--;
+                        solutionTest[j][i] = new Field(j, i, i, j,
+                                new Token(j, i, Tokentype.BLACK));
+                    } else if (i == 2 && j == 2) {
+                        this.currentEmptyField = new Field(j, i, i, j,
+                                new Token(j, i, Tokentype.EMPTY));
+                        this.currentGameState[i][j] = this.currentEmptyField;
+                        emptyFieldToInitiate--;
+                        solutionTest[j][i] = new Field(j, i, i, j,
+                                new Token(j, i, Tokentype.EMPTY));
+                    } else if (emptyFieldToInitiate == 0 && whiteTokensToInitiate != 0) {
+                        this.currentGameState[i][j] = new Field(i, j, j, i,
+                                new Token(i, j, Tokentype.WHITE));
+                        whiteTokensToInitiate--;
+                        solutionTest[j][i] = new Field(j, i, i, j,
+                                new Token(j, i, Tokentype.WHITE));
+                    } else {
+                        this.currentGameState[i][j] = new Field(i, j, j, i,
+                                new Token(i, j, Tokentype.BLACK));
+                        blackTokensToInitiate--;
+                        solutionTest[j][i] = new Field(j, i, i, j,
                                 new Token(j, i, Tokentype.BLACK));
                     }
                 }
@@ -132,6 +171,7 @@ public class FishermensSolitaer {
                     todoContent.replace(gameState.hashCode(2), existingGameState, gameState);
                     todo.add(gameState);
                     drawGameState(gameState.getFields());
+                    System.out.println(gameState.getHeuristic());
                 }
             } else {
                 todoContent.put(gameState.hashCode(2), gameState);

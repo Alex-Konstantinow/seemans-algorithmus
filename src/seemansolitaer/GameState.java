@@ -142,6 +142,9 @@ public class GameState{
     /**
      * generates the expected turns left for the current gamestate
      *
+     * Überschätzt, da auch Felder mitgezählt werden, die nicht zum Spielfeld gehören
+     * Es fehlt eine Überprüfung der Art des Feldes, auf welcher der Stein jeweils steht
+     *
      * @return heuristic divided by 2, because we expect to do always 2 steps per turn
      */
     private int calculateHeuristic() {
@@ -151,7 +154,6 @@ public class GameState{
             for (int j = 0; j < 5; j++) {
                 xMovesLeft += Math.abs(fields[i][j].getxPositionOnField() - fields[i][j].getTargetXPosition());
                 yMovesLeft += Math.abs(fields[i][j].getyPositionOnField() - fields[i][j].getTargetYPosition());
-
             }
         }
         return (xMovesLeft + yMovesLeft) / 2;
